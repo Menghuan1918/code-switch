@@ -171,9 +171,10 @@ jobs:
           set -euo pipefail
           shopt -s nullglob
 
-          appimage_files=(bin/*.AppImage)
-          [[ ${#appimage_files[@]} -gt 0 ]] || { echo "AppImage 未生成" >&2; exit 1; }
-          mv "${appimage_files[0]}" bin/codeswitch-linux-amd64.AppImage
+          # 疑似 Wails 上游 bug，AppImage 打包出来无法使用
+          # appimage_files=(bin/*.AppImage)
+          # [[ ${#appimage_files[@]} -gt 0 ]] || { echo "AppImage 未生成" >&2; exit 1; }
+          # mv "${appimage_files[0]}" bin/codeswitch-linux-amd64.AppImage
 
           deb_files=(bin/*.deb)
           [[ ${#deb_files[@]} -gt 0 ]] || { echo "deb 包未生成" >&2; exit 1; }
@@ -192,7 +193,6 @@ jobs:
         with:
           name: linux-amd64
           path: |
-            bin/codeswitch-linux-amd64.AppImage
             bin/codeswitch-linux-amd64.deb
             bin/codeswitch-linux-amd64.rpm
             bin/codeswitch-linux-amd64.pkg.tar.zst
@@ -219,7 +219,8 @@ jobs:
           cp artifacts/macos-amd64/codeswitch-macos-amd64.zip release-assets/
           cp artifacts/windows-amd64/CodeSwitch-amd64-installer.exe release-assets/
           cp artifacts/windows-amd64/CodeSwitch.exe release-assets/
-          cp artifacts/linux-amd64/codeswitch-linux-amd64.AppImage release-assets/
+          # 疑似 Wails 上游 bug，AppImage 打包出来无法使用
+          # cp artifacts/linux-amd64/codeswitch-linux-amd64.AppImage release-assets/
           cp artifacts/linux-amd64/codeswitch-linux-amd64.deb release-assets/
           cp artifacts/linux-amd64/codeswitch-linux-amd64.rpm release-assets/
           cp artifacts/linux-amd64/codeswitch-linux-amd64.pkg.tar.zst release-assets/
@@ -255,10 +256,11 @@ jobs:
             - **macOS (Apple Silicon)**：下载 `codeswitch-macos-arm64.zip`
             - **macOS (Intel)**：下载 `codeswitch-macos-amd64.zip`
             - **Linux (amd64)**：
-              - AppImage：下载 `codeswitch-linux-amd64.AppImage`，赋予执行权限后直接运行
               - Debian/Ubuntu：下载 `codeswitch-linux-amd64.deb` 后执行 `sudo dpkg -i codeswitch-linux-amd64.deb`
               - RHEL/CentOS：下载 `codeswitch-linux-amd64.rpm` 后执行 `sudo rpm -i codeswitch-linux-amd64.rpm`
               - Arch/Manjaro：下载 `codeswitch-linux-amd64.pkg.tar.zst` 后执行 `sudo pacman -U codeswitch-linux-amd64.pkg.tar.zst`
+
+            > **注意**：由于 Wails 打包问题，暂时移除了 Linux AppImage 格式的发布。请使用上述其他格式进行安装。
           draft: false
           prerelease: false
         env:
